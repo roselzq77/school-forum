@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusConnect Forum</title>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --text: #182133;
+  --muted: #6e7891;
+  --line: #e6ebf2;
+  --primary: #4f67e8;
+  --primary-dark: #3f54c5;
+  --soft: #eef2ff;
+  --danger: #e45a73;
+  --shadow: 0 12px 30px rgba(27, 39, 74, 0.08);
+  --radius: 20px;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 78px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-wrap h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.logo-wrap p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4f67e8, #7f92ff);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.nav-search {
+  flex: 1;
+  max-width: 520px;
+  margin: 0 24px;
+}
+
+.nav-search input {
+  width: 100%;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  padding: 0 16px;
+  background: #f9fbfe;
+  outline: none;
+}
+
+.nav-search input:focus {
+  background: white;
+  border-color: #bcc6ff;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-badge,
+.mini-avatar,
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 50%;
+}
+
+.user-badge {
+  width: 40px;
+  height: 40px;
+  background: #ffd8e2;
+  color: #8d2d4c;
+}
+
+.layout {
+  max-width: 1320px;
+  margin: 26px auto;
+  padding: 0 22px 40px;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 290px;
+  gap: 24px;
+}
+
+.sidebar {
+  align-self: start;
+  position: sticky;
+  top: 98px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.side-menu {
+  padding: 14px;
+}
+
+.side-menu h4 {
+  margin: 12px 10px 8px;
+  font-size: 12px;
+  color: #96a0b5;
+  letter-spacing: 0.8px;
+}
+
+.menu-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin: 4px 0;
+  font-weight: bold;
+  color: #43506a;
+  cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: var(--soft);
+  color: var(--primary);
+}
+
+.feed-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.feed-top h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.feed-top p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.feed-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #edf1f6;
+  color: #677287;
+  font-weight: bold;
+}
+
+.tab.active {
+  background: var(--text);
+  color: white;
+}
+
+.quick-post {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.quick-post button {
+  flex: 1;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #f8fbfe;
+  color: #8993a9;
+  text-align: left;
+  padding: 0 16px;
+}
+
+.mini-avatar {
+  width: 42px;
+  height: 42px;
+  background: #ffd8e2;
+  color: #8d2d4c;
+}
+
+.post {
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+}
+
+.avatar-blue {
+  background: #d8f1ff;
+  color: #256783;
+}
+
+.avatar-orange {
+  background: #ffe3bf;
+  color: #7d5319;
+}
+
+.avatar-purple {
+  background: #e1d9ff;
+  color: #5b488e;
+}
+
+.avatar-green {
+  background: #d4f7e7;
+  color: #2c7356;
+}
+
+.post-user-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-user {
+  font-weight: bold;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f2f4f8;
+  color: #6d778d;
+  font-weight: bold;
+}
+
+.post-meta {
+  margin-top: 4px;
+  color: #97a1b5;
+  font-size: 13px;
+}
+
+.tag {
+  display: inline-block;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.post h3 {
+  margin: 12px 0 8px;
+  font-size: 21px;
+}
+
+.post p {
+  margin: 0;
+  line-height: 1.7;
+  color: #4b5670;
+}
+
+.feature-box {
+  margin-top: 16px;
+  height: 170px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #dae4ff, #edf8ff, #f8efff);
+  display: flex;
+  align-items: flex-end;
+  padding: 18px;
+}
+
+.feature-box span {
+  background: rgba(255, 255, 255, 0.88);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: #4c5974;
+}
+
+.post-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.action {
+  border: none;
+  background: transparent;
+  color: #727c90;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.action:hover {
+  background: #f4f7fb;
+}
+
+.action.liked {
+  background: #fff0f4;
+  color: var(--danger);
+}
+
+.side-card,
+.announcement {
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.side-card h3,
+.announcement h3 {
+  margin-top: 0;
+}
+
+.announcement {
+  background: linear-gradient(145deg, #5067e8, #7488ff);
+  color: white;
+}
+
+.announcement p {
+  line-height: 1.65;
+  color: #eef2ff;
+}
+
+.info-row,
+.event-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.info-row:last-child,
+.event-item:last-child {
+  border-bottom: none;
+}
+
+.info-row span,
+.event-item span {
+  color: #7e889d;
+  font-size: 14px;
+}
+
+.btn {
+  border: none;
+  height: 42px;
+  border-radius: 12px;
+  padding: 0 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-light {
+  background: #f2f5f9;
+  color: var(--text);
+}
+
+.btn-white {
+  background: white;
+  color: var(--primary);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.42);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal-card {
+  width: min(620px, 100%);
+  background: white;
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 30px 70px rgba(24, 34, 57, 0.18);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background: #f3f6fa;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-top: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  color: #5d677b;
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fafcff;
+  padding: 12px 13px;
+  outline: none;
+}
+
+.form-group textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #bcc6ff;
+  background: white;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.empty-state {
+  display: none;
+  padding: 32px;
+  text-align: center;
+  color: #8a93a8;
+}
+
+@media (max-width: 1080px) {
+  .layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+
+  .right {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .navbar {
+    padding: 0 14px;
+  }
+
+  .nav-search {
+    display: none;
+  }
+
+  .nav-actions .btn-light {
+    display: none;
+  }
+
+  .layout {
+    display: block;
+    padding: 0 14px 24px;
+    margin-top: 18px;
+  }
+
+  .left {
+    display: none;
+  }
+
+  .feed-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+
+/* INTERACTIVE FEATURES */
+
+.notif-count {
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e85d75;
+  color: white;
+  font-size: 11px;
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  max-width: 320px;
+  background: #182133;
+  color: white;
+  padding: 13px 16px;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(24, 33, 51, 0.18);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: 0.25s;
+  z-index: 500;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.small-modal {
+  max-width: 500px;
+}
+
+.notification-list {
+  margin-top: 14px;
+}
+
+.notification-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item span,
+.detail-text,
+.setting-row span {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.setting-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.switch {
+  position: relative;
+  width: 48px;
+  height: 27px;
+  flex: 0 0 auto;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #d8deea;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: white;
+  transition: 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.switch input:checked + .slider {
+  background: var(--primary);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(21px);
+}
+
+body.compact-mode .post {
+  padding: 15px 18px;
+  margin-bottom: 10px;
+}
+
+body.compact-mode .post p {
+  line-height: 1.5;
+}
+
+body.hide-right .layout {
+  grid-template-columns: 220px minmax(0, 1fr);
+  max-width: 1060px;
+}
+
+body.hide-right .right {
+  display: none;
+}
+
+.action.saved {
+  background: var(--soft);
+  color: var(--primary);
+}
+
+.saved-only-note {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+</style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo-wrap">
+      <div class="logo">C</div>
+      <div>
+        <h2>CampusConnect</h2>
+        <p>School Forum</p>
+      </div>
+    </div>
+
+    <div class="nav-search">
+      <input id="searchInput" type="text" placeholder="Search posts, topics, or clubs..." />
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-light" id="notificationBtn">Notifications <span id="notificationCount" class="notif-count">3</span></button>
+      <button class="btn btn-primary" onclick="openModal()">New Post</button>
+      <div class="user-badge">RL</div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar left">
+      <div class="card side-menu">
+        <h4>FORUM</h4>
+        <button class="menu-item active" data-filter="All">Home</button>
+        <button class="menu-item" data-filter="Academics">Academics</button>
+        <button class="menu-item" data-filter="Campus Life">Campus Life</button>
+        <button class="menu-item" data-filter="Clubs">Clubs</button>
+        <button class="menu-item" data-filter="College Apps">College Apps</button>
+        <button class="menu-item" data-filter="Marketplace">Marketplace</button>
+
+        <h4>OTHER</h4>
+        <button class="menu-item" id="savedPostsBtn">Saved Posts</button>
+        <button class="menu-item" id="settingsBtn">Settings</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="feed-top">
+        <div>
+          <h1>Campus Feed</h1>
+          <p>See what students are talking about today.</p>
+        </div>
+        <div class="feed-tabs">
+          <button class="tab active" id="latestTab">Latest</button>
+          <button class="tab" id="popularTab">Popular</button>
+        </div>
+      </section>
+
+      <section class="card quick-post">
+        <div class="mini-avatar">R</div>
+        <button onclick="openModal()">Share a question, update, or event...</button>
+      </section>
+
+      <section id="postList">
+        <article class="card post" data-likes="24" data-category="Academics" data-search="ap calculus bc study group math exam academics">
+          <div class="post-header">
+            <div class="avatar avatar-blue">J</div>
+            <div>
+              <div class="post-user-row">
+                <span class="post-user">Jason Chen</span>
+                <span class="badge">Senior</span>
+              </div>
+              <div class="post-meta">12 minutes ago · Academics</div>
+            </div>
+          </div>
+          <h3>Anyone want to start an AP Calculus BC study group?</h3>
+          <p>
+            I just started reviewing Units 2 and 3, and studying alone is getting a little boring.
+            I’m looking for 3–5 people who want to work on FRQs after school and help each other with difficult problems.
+          </p>
+          <div class="post-actions">
+            <button class="action like-btn">♡ 24</button>
+            <button class="action">💬 8</button>
+            <button class="action">↗ Share</button>
+            <button class="action">🔖 Save</button>
+          </div>
+        </article>
+
+        <article class="card post" data-likes="86" data-category="Campus Life" data-search="homecoming dance tickets student council campus life">
+          <div class="post-header">
+            <div class="avatar avatar-orange">M</div>
+            <div>
+              <div class="post-user-row">
+                <span class="post-user">Mia Zhang</span>
+                <span class="badge">Student Council</span>
+              </div>
+              <div class="post-meta">35 minutes ago · Campus Life</div>
+            </div>
+          </div>
+          <span class="tag">Pinned Event</span>
+          <h3>Homecoming Dance tickets go on sale this Friday!</h3>
+          <p>
+            This year’s theme is “Under the Stars.” Tickets will be available online and at the ASB office.
+            Early bird pricing ends next Wednesday, so remember to bring your student ID.
+          </p>
+          <div class="feature-box">
+            <span>Homecoming • Under the Stars</span>
+          </div>
+          <div class="post-actions">
+            <button class="action like-btn">♡ 86</button>
+            <button class="action">💬 19</button>
+            <button class="action">↗ Share</button>
+            <button class="action">🔖 Save</button>
+          </div>
+        </article>
+
+        <article class="card post" data-likes="41" data-category="College Apps" data-search="common app essay draft admissions college apps">
+          <div class="post-header">
+            <div class="avatar avatar-purple">A</div>
+            <div>
+              <div class="post-user-row">
+                <span class="post-user">Anonymous Owl</span>
+                <span class="badge">Anonymous</span>
+              </div>
+              <div class="post-meta">1 hour ago · College Apps</div>
+            </div>
+          </div>
+          <h3>What draft is everyone on for their Common App essay?</h3>
+          <p>
+            I’m already on my fourth draft, but my opening still feels too ordinary. Do you usually
+            finish the full story first and revise later, or do you edit each sentence as you go?
+          </p>
+          <div class="post-actions">
+            <button class="action like-btn">♡ 41</button>
+            <button class="action">💬 27</button>
+            <button class="action">↗ Share</button>
+            <button class="action">🔖 Save</button>
+          </div>
+        </article>
+
+        <article class="card post" data-likes="57" data-category="Clubs" data-search="business club ai finance fintech investing clubs">
+          <div class="post-header">
+            <div class="avatar avatar-green">B</div>
+            <div>
+              <div class="post-user-row">
+                <span class="post-user">Business Club</span>
+                <span class="badge">Official Club</span>
+              </div>
+              <div class="post-meta">2 hours ago · Clubs</div>
+            </div>
+          </div>
+          <h3>This week’s topic: How will AI change investing and finance?</h3>
+          <p>
+            Join us Thursday during lunch in Room 214. We’ll talk about AI stock analysis,
+            quantitative trading, and FinTech, followed by a short group discussion. No experience needed.
+          </p>
+          <div class="post-actions">
+            <button class="action like-btn">♡ 57</button>
+            <button class="action">💬 12</button>
+            <button class="action">↗ Share</button>
+            <button class="action">🔖 Save</button>
+          </div>
+        </article>
+
+        <div id="emptyState" class="card empty-state">No matching posts found.</div>
+      </section>
+    </main>
+
+    <aside class="sidebar right">
+      <div class="card announcement">
+        <h3>School Announcement</h3>
+        <p>
+          This Friday is a minimum day. School will end at 12:45 PM.
+          Please plan transportation and club meetings ahead of time.
+        </p>
+        <button class="btn btn-white" id="announcementBtn">View Details</button>
+      </div>
+
+      <div class="card side-card">
+        <h3>Trending Topics</h3>
+        <div class="info-row">
+          <strong>#Homecoming2026</strong>
+          <span>128 posts</span>
+        </div>
+        <div class="info-row">
+          <strong>#CollegeApps</strong>
+          <span>96 posts</span>
+        </div>
+        <div class="info-row">
+          <strong>#APStudyTips</strong>
+          <span>74 posts</span>
+        </div>
+        <div class="info-row">
+          <strong>#ClubRush</strong>
+          <span>51 posts</span>
+        </div>
+      </div>
+
+      <div class="card side-card">
+        <h3>Upcoming Events</h3>
+        <div class="event-item">
+          <strong>Club Fair</strong>
+          <span>September 15 · Lunch</span>
+        </div>
+        <div class="event-item">
+          <strong>College Night</strong>
+          <span>September 18 · 6:00 PM</span>
+        </div>
+        <div class="event-item">
+          <strong>Homecoming Game</strong>
+          <span>September 25 · 7:00 PM</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="backdropClose(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Create a New Post</h2>
+        <button class="close-btn" onclick="closeModal()">×</button>
+      </div>
+
+      <div class="form-group">
+        <label for="categoryInput">Category</label>
+        <select id="categoryInput">
+          <option>Academics</option>
+          <option>Campus Life</option>
+          <option>Clubs</option>
+          <option>College Apps</option>
+          <option>Marketplace</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="titleInput">Title</label>
+        <input type="text" id="titleInput" placeholder="Enter a title" />
+      </div>
+
+      <div class="form-group">
+        <label for="contentInput">Post</label>
+        <textarea id="contentInput" placeholder="Write your post here..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-light" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="publishPost()">Publish</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-overlay" id="notificationModal">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h2>Notifications</h2>
+        <button class="close-btn" data-close="notificationModal">×</button>
+      </div>
+      <div class="notification-list">
+        <div class="notification-item">
+          <strong>Mia Zhang replied to your post</strong>
+          <span>“I can join the study group!”</span>
+        </div>
+        <div class="notification-item">
+          <strong>Business Club posted an update</strong>
+          <span>Meeting moved to Room 214.</span>
+        </div>
+        <div class="notification-item">
+          <strong>Homecoming tickets are now available</strong>
+          <span>Early bird pricing ends next Wednesday.</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="markReadBtn">Mark All as Read</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="announcementModal">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h2>School Announcement</h2>
+        <button class="close-btn" data-close="announcementModal">×</button>
+      </div>
+      <p class="detail-text">
+        This Friday is a minimum day. School ends at <strong>12:45 PM</strong>.
+        Lunch will not be served after dismissal, and after-school clubs should
+        confirm whether they are still meeting with their advisors.
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" data-close="announcementModal">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="close-btn" data-close="settingsModal">×</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Compact posts</strong>
+          <span>Show less spacing between posts.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="compactToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Hide right sidebar</strong>
+          <span>Focus only on the discussion feed.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="sidebarToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  
+<script>
+const modalOverlay = document.getElementById('modalOverlay');
+const postList = document.getElementById('postList');
+const emptyState = document.getElementById('emptyState');
+const searchInput = document.getElementById('searchInput');
+const toast = document.getElementById('toast');
+
+let currentFilter = 'All';
+let savedOnly = false;
+
+function openModal() {
+  modalOverlay.classList.add('show');
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('show');
+}
+
+function backdropClose(event) {
+  if (event.target === modalOverlay) {
+    closeModal();
+  }
+}
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+      modal.classList.remove('show');
+    });
+  }
+});
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add('show');
+
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(function () {
+    toast.classList.remove('show');
+  }, 2200);
+}
+
+function attachLikeBehavior(button) {
+  button.addEventListener('click', function () {
+    const post = button.closest('.post');
+    const liked = button.classList.toggle('liked');
+    const current = parseInt((button.textContent.match(/\d+/) || ['0'])[0], 10);
+    const next = liked ? current + 1 : current - 1;
+
+    button.textContent = (liked ? '♥ ' : '♡ ') + next;
+    post.dataset.likes = next;
+  });
+}
+
+function attachSaveBehavior(button) {
+  button.addEventListener('click', function () {
+    const post = button.closest('.post');
+    const saved = button.classList.toggle('saved');
+
+    post.dataset.saved = saved ? 'true' : 'false';
+    button.textContent = saved ? '🔖 Saved' : '🔖 Save';
+
+    showToast(saved ? 'Post saved.' : 'Post removed from saved posts.');
+
+    if (savedOnly) {
+      applyFilters();
+    }
+  });
+}
+
+function attachShareBehavior(button) {
+  button.addEventListener('click', async function () {
+    const post = button.closest('.post');
+    const title = post.querySelector('h3').textContent;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: title,
+          text: 'Check out this post on CampusConnect: ' + title
+        });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(title);
+        showToast('Post title copied to clipboard.');
+      } else {
+        showToast('Share: ' + title);
+      }
+    } catch (error) {
+      // User canceled share dialog; no message needed.
+    }
+  });
+}
+
+function attachPostButtons(post) {
+  const buttons = post.querySelectorAll('.action');
+
+  buttons.forEach(function(button) {
+    if (button.classList.contains('like-btn')) {
+      attachLikeBehavior(button);
+    } else if (button.textContent.includes('Share')) {
+      attachShareBehavior(button);
+    } else if (button.textContent.includes('Save')) {
+      attachSaveBehavior(button);
+    } else if (button.textContent.includes('💬')) {
+      button.addEventListener('click', function() {
+        showToast('Comments section opened for this post.');
+      });
+    }
+  });
+}
+
+document.querySelectorAll('.post').forEach(attachPostButtons);
+
+function escapeHTML(text) {
+  return text.replace(/[&<>"']/g, function (char) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[char];
+  });
+}
+
+function publishPost() {
+  const category = document.getElementById('categoryInput').value;
+  const title = document.getElementById('titleInput').value.trim();
+  const content = document.getElementById('contentInput').value.trim();
+
+  if (!title || !content) {
+    alert('Please enter both a title and a post.');
+    return;
+  }
+
+  const article = document.createElement('article');
+  article.className = 'card post';
+  article.dataset.category = category;
+  article.dataset.search = (title + ' ' + content + ' ' + category).toLowerCase();
+  article.dataset.likes = '0';
+  article.dataset.saved = 'false';
+
+  article.innerHTML = `
+    <div class="post-header">
+      <div class="avatar">R</div>
+      <div>
+        <div class="post-user-row">
+          <span class="post-user">Rose Liu</span>
+          <span class="badge">Senior</span>
+        </div>
+        <div class="post-meta">Just now · ${category}</div>
+      </div>
+    </div>
+
+    <h3>${escapeHTML(title)}</h3>
+    <p>${escapeHTML(content)}</p>
+
+    <div class="post-actions">
+      <button class="action like-btn">♡ 0</button>
+      <button class="action">💬 0</button>
+      <button class="action">↗ Share</button>
+      <button class="action">🔖 Save</button>
+    </div>
+  `;
+
+  postList.insertBefore(article, postList.firstChild);
+  attachPostButtons(article);
+
+  document.getElementById('titleInput').value = '';
+  document.getElementById('contentInput').value = '';
+
+  closeModal();
+  showToast('Your post was published.');
+  applyFilters();
+}
+
+function applyFilters() {
+  const term = searchInput.value.trim().toLowerCase();
+  let visible = 0;
+
+  document.querySelectorAll('#postList .post').forEach(function(post) {
+    const text = (post.textContent + ' ' + (post.dataset.search || '')).toLowerCase();
+    const matchesSearch = text.includes(term);
+    const matchesCategory = currentFilter === 'All' || post.dataset.category === currentFilter;
+    const matchesSaved = !savedOnly || post.dataset.saved === 'true';
+
+    const show = matchesSearch && matchesCategory && matchesSaved;
+    post.style.display = show ? '' : 'none';
+
+    if (show) visible++;
+  });
+
+  emptyState.style.display = visible ? 'none' : 'block';
+  emptyState.textContent = savedOnly && visible === 0
+    ? 'You have not saved any posts yet.'
+    : 'No matching posts found.';
+}
+
+searchInput.addEventListener('input', applyFilters);
+
+document.querySelectorAll('.menu-item[data-filter]').forEach(function (button) {
+  button.addEventListener('click', function () {
+    document.querySelectorAll('.menu-item').forEach(function (b) {
+      b.classList.remove('active');
+    });
+
+    button.classList.add('active');
+    currentFilter = button.dataset.filter;
+    savedOnly = false;
+    applyFilters();
+  });
+});
+
+document.getElementById('savedPostsBtn').addEventListener('click', function() {
+  document.querySelectorAll('.menu-item').forEach(function (b) {
+    b.classList.remove('active');
+  });
+
+  this.classList.add('active');
+  savedOnly = true;
+  currentFilter = 'All';
+  applyFilters();
+});
+
+document.getElementById('latestTab').addEventListener('click', function() {
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.classList.remove('active');
+  });
+  this.classList.add('active');
+
+  const posts = Array.from(document.querySelectorAll('#postList .post'));
+  posts.reverse().forEach(function(post) {
+    postList.insertBefore(post, emptyState);
+  });
+
+  showToast('Showing latest posts.');
+});
+
+document.getElementById('popularTab').addEventListener('click', function() {
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.classList.remove('active');
+  });
+  this.classList.add('active');
+
+  const posts = Array.from(document.querySelectorAll('#postList .post'));
+  posts
+    .sort(function(a, b) {
+      return Number(b.dataset.likes || 0) - Number(a.dataset.likes || 0);
+    })
+    .forEach(function(post) {
+      postList.insertBefore(post, emptyState);
+    });
+
+  showToast('Posts sorted by likes.');
+});
+
+document.getElementById('notificationBtn').addEventListener('click', function() {
+  document.getElementById('notificationModal').classList.add('show');
+});
+
+document.getElementById('markReadBtn').addEventListener('click', function() {
+  document.getElementById('notificationCount').style.display = 'none';
+  document.getElementById('notificationModal').classList.remove('show');
+  showToast('All notifications marked as read.');
+});
+
+document.getElementById('announcementBtn').addEventListener('click', function() {
+  document.getElementById('announcementModal').classList.add('show');
+});
+
+document.getElementById('settingsBtn').addEventListener('click', function() {
+  document.getElementById('settingsModal').classList.add('show');
+});
+
+document.querySelectorAll('[data-close]').forEach(function(button) {
+  button.addEventListener('click', function() {
+    document.getElementById(button.dataset.close).classList.remove('show');
+  });
+});
+
+document.querySelectorAll('#notificationModal, #announcementModal, #settingsModal').forEach(function(modal) {
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      modal.classList.remove('show');
+    }
+  });
+});
+
+document.getElementById('compactToggle').addEventListener('change', function() {
+  document.body.classList.toggle('compact-mode', this.checked);
+});
+
+document.getElementById('sidebarToggle').addEventListener('change', function() {
+  document.body.classList.toggle('hide-right', this.checked);
+});
+
+</script>
+</body>
+</html>
