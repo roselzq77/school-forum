@@ -568,6 +568,159 @@ select {
   }
 }
 
+
+/* INTERACTIVE FEATURES */
+
+.notif-count {
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e85d75;
+  color: white;
+  font-size: 11px;
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  max-width: 320px;
+  background: #182133;
+  color: white;
+  padding: 13px 16px;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(24, 33, 51, 0.18);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: 0.25s;
+  z-index: 500;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.small-modal {
+  max-width: 500px;
+}
+
+.notification-list {
+  margin-top: 14px;
+}
+
+.notification-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item span,
+.detail-text,
+.setting-row span {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.setting-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.switch {
+  position: relative;
+  width: 48px;
+  height: 27px;
+  flex: 0 0 auto;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #d8deea;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: white;
+  transition: 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.switch input:checked + .slider {
+  background: var(--primary);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(21px);
+}
+
+body.compact-mode .post {
+  padding: 15px 18px;
+  margin-bottom: 10px;
+}
+
+body.compact-mode .post p {
+  line-height: 1.5;
+}
+
+body.hide-right .layout {
+  grid-template-columns: 220px minmax(0, 1fr);
+  max-width: 1060px;
+}
+
+body.hide-right .right {
+  display: none;
+}
+
+.action.saved {
+  background: var(--soft);
+  color: var(--primary);
+}
+
+.saved-only-note {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 </style>
 </head>
 <body>
@@ -586,7 +739,7 @@ select {
     </div>
 
     <div class="nav-actions">
-      <button class="btn btn-light">Notifications</button>
+      <button class="btn btn-light" id="notificationBtn">Notifications <span id="notificationCount" class="notif-count">3</span></button>
       <button class="btn btn-primary" onclick="openModal()">New Post</button>
       <div class="user-badge">RL</div>
     </div>
@@ -604,8 +757,8 @@ select {
         <button class="menu-item" data-filter="Marketplace">Marketplace</button>
 
         <h4>OTHER</h4>
-        <button class="menu-item">Saved Posts</button>
-        <button class="menu-item">Settings</button>
+        <button class="menu-item" id="savedPostsBtn">Saved Posts</button>
+        <button class="menu-item" id="settingsBtn">Settings</button>
       </div>
     </aside>
 
@@ -616,8 +769,8 @@ select {
           <p>See what students are talking about today.</p>
         </div>
         <div class="feed-tabs">
-          <button class="tab active">Latest</button>
-          <button class="tab">Popular</button>
+          <button class="tab active" id="latestTab">Latest</button>
+          <button class="tab" id="popularTab">Popular</button>
         </div>
       </section>
 
@@ -627,7 +780,7 @@ select {
       </section>
 
       <section id="postList">
-        <article class="card post" data-category="Academics" data-search="ap calculus bc study group math exam academics">
+        <article class="card post" data-likes="24" data-category="Academics" data-search="ap calculus bc study group math exam academics">
           <div class="post-header">
             <div class="avatar avatar-blue">J</div>
             <div>
@@ -651,7 +804,7 @@ select {
           </div>
         </article>
 
-        <article class="card post" data-category="Campus Life" data-search="homecoming dance tickets student council campus life">
+        <article class="card post" data-likes="86" data-category="Campus Life" data-search="homecoming dance tickets student council campus life">
           <div class="post-header">
             <div class="avatar avatar-orange">M</div>
             <div>
@@ -679,7 +832,7 @@ select {
           </div>
         </article>
 
-        <article class="card post" data-category="College Apps" data-search="common app essay draft admissions college apps">
+        <article class="card post" data-likes="41" data-category="College Apps" data-search="common app essay draft admissions college apps">
           <div class="post-header">
             <div class="avatar avatar-purple">A</div>
             <div>
@@ -703,7 +856,7 @@ select {
           </div>
         </article>
 
-        <article class="card post" data-category="Clubs" data-search="business club ai finance fintech investing clubs">
+        <article class="card post" data-likes="57" data-category="Clubs" data-search="business club ai finance fintech investing clubs">
           <div class="post-header">
             <div class="avatar avatar-green">B</div>
             <div>
@@ -738,7 +891,7 @@ select {
           This Friday is a minimum day. School will end at 12:45 PM.
           Please plan transportation and club meetings ahead of time.
         </p>
-        <button class="btn btn-white">View Details</button>
+        <button class="btn btn-white" id="announcementBtn">View Details</button>
       </div>
 
       <div class="card side-card">
@@ -814,12 +967,93 @@ select {
     </div>
   </div>
 
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-overlay" id="notificationModal">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h2>Notifications</h2>
+        <button class="close-btn" data-close="notificationModal">×</button>
+      </div>
+      <div class="notification-list">
+        <div class="notification-item">
+          <strong>Mia Zhang replied to your post</strong>
+          <span>“I can join the study group!”</span>
+        </div>
+        <div class="notification-item">
+          <strong>Business Club posted an update</strong>
+          <span>Meeting moved to Room 214.</span>
+        </div>
+        <div class="notification-item">
+          <strong>Homecoming tickets are now available</strong>
+          <span>Early bird pricing ends next Wednesday.</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="markReadBtn">Mark All as Read</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="announcementModal">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h2>School Announcement</h2>
+        <button class="close-btn" data-close="announcementModal">×</button>
+      </div>
+      <p class="detail-text">
+        This Friday is a minimum day. School ends at <strong>12:45 PM</strong>.
+        Lunch will not be served after dismissal, and after-school clubs should
+        confirm whether they are still meeting with their advisors.
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" data-close="announcementModal">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="close-btn" data-close="settingsModal">×</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Compact posts</strong>
+          <span>Show less spacing between posts.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="compactToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Hide right sidebar</strong>
+          <span>Focus only on the discussion feed.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="sidebarToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
   
 <script>
 const modalOverlay = document.getElementById('modalOverlay');
 const postList = document.getElementById('postList');
 const emptyState = document.getElementById('emptyState');
 const searchInput = document.getElementById('searchInput');
+const toast = document.getElementById('toast');
+
+let currentFilter = 'All';
+let savedOnly = false;
 
 function openModal() {
   modalOverlay.classList.add('show');
@@ -837,19 +1071,92 @@ function backdropClose(event) {
 
 document.addEventListener('keydown', function (event) {
   if (event.key === 'Escape') {
-    closeModal();
+    document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+      modal.classList.remove('show');
+    });
   }
 });
 
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add('show');
+
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(function () {
+    toast.classList.remove('show');
+  }, 2200);
+}
+
 function attachLikeBehavior(button) {
   button.addEventListener('click', function () {
+    const post = button.closest('.post');
     const liked = button.classList.toggle('liked');
     const current = parseInt((button.textContent.match(/\d+/) || ['0'])[0], 10);
-    button.textContent = (liked ? '♥ ' : '♡ ') + (liked ? current + 1 : current - 1);
+    const next = liked ? current + 1 : current - 1;
+
+    button.textContent = (liked ? '♥ ' : '♡ ') + next;
+    post.dataset.likes = next;
   });
 }
 
-document.querySelectorAll('.like-btn').forEach(attachLikeBehavior);
+function attachSaveBehavior(button) {
+  button.addEventListener('click', function () {
+    const post = button.closest('.post');
+    const saved = button.classList.toggle('saved');
+
+    post.dataset.saved = saved ? 'true' : 'false';
+    button.textContent = saved ? '🔖 Saved' : '🔖 Save';
+
+    showToast(saved ? 'Post saved.' : 'Post removed from saved posts.');
+
+    if (savedOnly) {
+      applyFilters();
+    }
+  });
+}
+
+function attachShareBehavior(button) {
+  button.addEventListener('click', async function () {
+    const post = button.closest('.post');
+    const title = post.querySelector('h3').textContent;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: title,
+          text: 'Check out this post on CampusConnect: ' + title
+        });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(title);
+        showToast('Post title copied to clipboard.');
+      } else {
+        showToast('Share: ' + title);
+      }
+    } catch (error) {
+      // User canceled share dialog; no message needed.
+    }
+  });
+}
+
+function attachPostButtons(post) {
+  const buttons = post.querySelectorAll('.action');
+
+  buttons.forEach(function(button) {
+    if (button.classList.contains('like-btn')) {
+      attachLikeBehavior(button);
+    } else if (button.textContent.includes('Share')) {
+      attachShareBehavior(button);
+    } else if (button.textContent.includes('Save')) {
+      attachSaveBehavior(button);
+    } else if (button.textContent.includes('💬')) {
+      button.addEventListener('click', function() {
+        showToast('Comments section opened for this post.');
+      });
+    }
+  });
+}
+
+document.querySelectorAll('.post').forEach(attachPostButtons);
 
 function escapeHTML(text) {
   return text.replace(/[&<>"']/g, function (char) {
@@ -877,6 +1184,8 @@ function publishPost() {
   article.className = 'card post';
   article.dataset.category = category;
   article.dataset.search = (title + ' ' + content + ' ' + category).toLowerCase();
+  article.dataset.likes = '0';
+  article.dataset.saved = 'false';
 
   article.innerHTML = `
     <div class="post-header">
@@ -889,8 +1198,10 @@ function publishPost() {
         <div class="post-meta">Just now · ${category}</div>
       </div>
     </div>
+
     <h3>${escapeHTML(title)}</h3>
     <p>${escapeHTML(content)}</p>
+
     <div class="post-actions">
       <button class="action like-btn">♡ 0</button>
       <button class="action">💬 0</button>
@@ -900,56 +1211,134 @@ function publishPost() {
   `;
 
   postList.insertBefore(article, postList.firstChild);
-  attachLikeBehavior(article.querySelector('.like-btn'));
+  attachPostButtons(article);
 
   document.getElementById('titleInput').value = '';
   document.getElementById('contentInput').value = '';
+
   closeModal();
+  showToast('Your post was published.');
+  applyFilters();
 }
 
-function runSearch() {
+function applyFilters() {
   const term = searchInput.value.trim().toLowerCase();
   let visible = 0;
 
-  document.querySelectorAll('#postList .post').forEach(function (post) {
+  document.querySelectorAll('#postList .post').forEach(function(post) {
     const text = (post.textContent + ' ' + (post.dataset.search || '')).toLowerCase();
-    const show = text.includes(term);
+    const matchesSearch = text.includes(term);
+    const matchesCategory = currentFilter === 'All' || post.dataset.category === currentFilter;
+    const matchesSaved = !savedOnly || post.dataset.saved === 'true';
+
+    const show = matchesSearch && matchesCategory && matchesSaved;
     post.style.display = show ? '' : 'none';
+
     if (show) visible++;
   });
 
   emptyState.style.display = visible ? 'none' : 'block';
+  emptyState.textContent = savedOnly && visible === 0
+    ? 'You have not saved any posts yet.'
+    : 'No matching posts found.';
 }
 
-searchInput.addEventListener('input', runSearch);
+searchInput.addEventListener('input', applyFilters);
 
 document.querySelectorAll('.menu-item[data-filter]').forEach(function (button) {
   button.addEventListener('click', function () {
-    document.querySelectorAll('.menu-item[data-filter]').forEach(function (b) {
+    document.querySelectorAll('.menu-item').forEach(function (b) {
       b.classList.remove('active');
     });
+
     button.classList.add('active');
-
-    const filter = button.dataset.filter;
-    let visible = 0;
-
-    document.querySelectorAll('#postList .post').forEach(function (post) {
-      const show = filter === 'All' || post.dataset.category === filter;
-      post.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-
-    emptyState.style.display = visible ? 'none' : 'block';
+    currentFilter = button.dataset.filter;
+    savedOnly = false;
+    applyFilters();
   });
 });
 
-document.querySelectorAll('.tab').forEach(function (tab) {
-  tab.addEventListener('click', function () {
-    document.querySelectorAll('.tab').forEach(function (t) {
-      t.classList.remove('active');
-    });
-    tab.classList.add('active');
+document.getElementById('savedPostsBtn').addEventListener('click', function() {
+  document.querySelectorAll('.menu-item').forEach(function (b) {
+    b.classList.remove('active');
   });
+
+  this.classList.add('active');
+  savedOnly = true;
+  currentFilter = 'All';
+  applyFilters();
+});
+
+document.getElementById('latestTab').addEventListener('click', function() {
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.classList.remove('active');
+  });
+  this.classList.add('active');
+
+  const posts = Array.from(document.querySelectorAll('#postList .post'));
+  posts.reverse().forEach(function(post) {
+    postList.insertBefore(post, emptyState);
+  });
+
+  showToast('Showing latest posts.');
+});
+
+document.getElementById('popularTab').addEventListener('click', function() {
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.classList.remove('active');
+  });
+  this.classList.add('active');
+
+  const posts = Array.from(document.querySelectorAll('#postList .post'));
+  posts
+    .sort(function(a, b) {
+      return Number(b.dataset.likes || 0) - Number(a.dataset.likes || 0);
+    })
+    .forEach(function(post) {
+      postList.insertBefore(post, emptyState);
+    });
+
+  showToast('Posts sorted by likes.');
+});
+
+document.getElementById('notificationBtn').addEventListener('click', function() {
+  document.getElementById('notificationModal').classList.add('show');
+});
+
+document.getElementById('markReadBtn').addEventListener('click', function() {
+  document.getElementById('notificationCount').style.display = 'none';
+  document.getElementById('notificationModal').classList.remove('show');
+  showToast('All notifications marked as read.');
+});
+
+document.getElementById('announcementBtn').addEventListener('click', function() {
+  document.getElementById('announcementModal').classList.add('show');
+});
+
+document.getElementById('settingsBtn').addEventListener('click', function() {
+  document.getElementById('settingsModal').classList.add('show');
+});
+
+document.querySelectorAll('[data-close]').forEach(function(button) {
+  button.addEventListener('click', function() {
+    document.getElementById(button.dataset.close).classList.remove('show');
+  });
+});
+
+document.querySelectorAll('#notificationModal, #announcementModal, #settingsModal').forEach(function(modal) {
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      modal.classList.remove('show');
+    }
+  });
+});
+
+document.getElementById('compactToggle').addEventListener('change', function() {
+  document.body.classList.toggle('compact-mode', this.checked);
+});
+
+document.getElementById('sidebarToggle').addEventListener('change', function() {
+  document.body.classList.toggle('hide-right', this.checked);
 });
 
 </script>
